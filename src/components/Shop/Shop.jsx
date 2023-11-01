@@ -8,17 +8,27 @@ import Cart from "../Cart/Cart";
 import Product from "../Product/Product";
 import "./Shop.css";
 import { Link, useLoaderData } from "react-router-dom";
+import CardSkeleton from "../Skeleton/CardSkeleton";
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
   const { totalItem } = useLoaderData();
-  console.log(totalItem);
+  //   console.log(totalItem);
+  const [items, setItems] = useState(10);
+
+  const numberOfPages = Math.ceil(totalItem / items);
+
+  const pages = [...Array(numberOfPages).keys()];
 
   useEffect(() => {
     fetch("http://localhost:5000/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -66,23 +76,48 @@ const Shop = () => {
     deleteShoppingCart();
   };
 
+  const handlePageChange = (e) => {
+    const value = e.target.value;
+    setItems(parseInt(value));
+  };
+
   return (
-    <div className="shop-container">
-      <div className="products-container">
-        {products.map((product) => (
-          <Product
-            key={product._id}
-            product={product}
-            handleAddToCart={handleAddToCart}
-          ></Product>
-        ))}
+    <div>
+      <div className="shop-container">
+        {loading && <CardSkeleton cards={items}></CardSkeleton>}
+        { loading ||  <div className="products-container">
+          {products.map((product) => (
+            <Product
+              key={product._id}
+              product={product}
+              handleAddToCart={handleAddToCart}
+            ></Product>
+          ))}
+        </div>}
+        <div className="cart-container">
+          <Cart cart={cart} handleClearCart={handleClearCart}>
+            <Link className="proceed-link" to="/orders">
+              <button className="btn-proceed">Review Order</button>
+            </Link>
+          </Cart>
+        </div>
       </div>
-      <div className="cart-container">
-        <Cart cart={cart} handleClearCart={handleClearCart}>
-          <Link className="proceed-link" to="/orders">
-            <button className="btn-proceed">Review Order</button>
-          </Link>
-        </Cart>
+
+      <div className="pagination">
+        {pages.map((page) => (
+          <button>{page + 1}</button>
+        ))}
+        <select
+          defaultValue={items}
+          onChange={handlePageChange}
+          name="pageVlaue"
+          id=""
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
       </div>
     </div>
   );

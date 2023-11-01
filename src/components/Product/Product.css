@@ -29,6 +29,7 @@
 }
 .product-info p{
     margin-top: 5px;
+    margin-left: -10px;
 }
 .btn-cart{
     width: 100%;
@@ -40,4 +41,18 @@
 }
 .btn-cart:hover{
     background-color: orange;
+}
+
+
+.dummy-img{
+    width: 286px;
+    height: 286px;
+    margin: 7px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.fake-btn{
+    position: absolute;
+    bottom: 0;
 }
