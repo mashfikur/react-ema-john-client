@@ -34,3 +34,8 @@
   justify-content: center;
   gap: 1rem;
 }
+
+.selected{
+  background: brown;
+
+}

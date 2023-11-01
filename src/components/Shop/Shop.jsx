@@ -14,6 +14,7 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const { totalItem } = useLoaderData();
   //   console.log(totalItem);
   const [items, setItems] = useState(10);
@@ -79,21 +80,25 @@ const Shop = () => {
   const handlePageChange = (e) => {
     const value = e.target.value;
     setItems(parseInt(value));
+    setCurrentPage(1);
   };
 
   return (
     <div>
       <div className="shop-container">
         {loading && <CardSkeleton cards={items}></CardSkeleton>}
-        { loading ||  <div className="products-container">
-          {products.map((product) => (
-            <Product
-              key={product._id}
-              product={product}
-              handleAddToCart={handleAddToCart}
-            ></Product>
-          ))}
-        </div>}
+
+        {loading || (
+          <div className="products-container">
+            {products.map((product) => (
+              <Product
+                key={product._id}
+                product={product}
+                handleAddToCart={handleAddToCart}
+              ></Product>
+            ))}
+          </div>
+        )}
         <div className="cart-container">
           <Cart cart={cart} handleClearCart={handleClearCart}>
             <Link className="proceed-link" to="/orders">
@@ -102,11 +107,23 @@ const Shop = () => {
           </Cart>
         </div>
       </div>
-
+      <p className="text-center">Current Page : {currentPage} </p>
       <div className="pagination">
-        {pages.map((page) => (
-          <button>{page + 1}</button>
+        <button
+          onClick={(currentPage > 1) ? () => setCurrentPage(currentPage - 1) : undefined}
+        >
+          Prev
+        </button>
+        {pages.map((page, idx) => (
+          <button
+            key={idx}
+            className={`${page + 1 === currentPage && "selected"}`}
+            onClick={() => setCurrentPage(page + 1)}
+          >
+            {page + 1}
+          </button>
         ))}
+        <button onClick={currentPage < numberOfPages ? () => setCurrentPage(currentPage + 1) : undefined} >Next</button>
         <select
           defaultValue={items}
           onChange={handlePageChange}

@@ -9,8 +9,8 @@ const CardSkeleton = ({ cards }) => {
 
   return (
     <div className="main">
-      {cardsArray.map((cards) => (
-        <div>
+      {cardsArray.map((cards, idx) => (
+        <div key={idx}>
           <div className="skeleton-body">
             <div className="dummy-img">
               <Skeleton height={"286px"}></Skeleton>
