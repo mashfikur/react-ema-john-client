@@ -24,13 +24,13 @@ const Shop = () => {
   const pages = [...Array(numberOfPages).keys()];
 
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch(`http://localhost:5000/products?page=${currentPage-1}&size=${items}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
         setLoading(false);
       });
-  }, []);
+  }, [currentPage,items]);
 
   useEffect(() => {
     const storedCart = getShoppingCart();
@@ -107,10 +107,11 @@ const Shop = () => {
           </Cart>
         </div>
       </div>
-      <p className="text-center">Current Page : {currentPage} </p>
-      <div className="pagination">
+      <div className="pagination sticky bottom-2 ">
         <button
-          onClick={(currentPage > 1) ? () => setCurrentPage(currentPage - 1) : undefined}
+          onClick={
+            currentPage > 1 ? () => setCurrentPage(currentPage - 1) : undefined
+          }
         >
           Prev
         </button>
@@ -123,7 +124,15 @@ const Shop = () => {
             {page + 1}
           </button>
         ))}
-        <button onClick={currentPage < numberOfPages ? () => setCurrentPage(currentPage + 1) : undefined} >Next</button>
+        <button
+          onClick={
+            currentPage < numberOfPages
+              ? () => setCurrentPage(currentPage + 1)
+              : undefined
+          }
+        >
+          Next
+        </button>
         <select
           defaultValue={items}
           onChange={handlePageChange}
